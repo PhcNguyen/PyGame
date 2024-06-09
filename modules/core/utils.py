@@ -11,7 +11,7 @@ FRAMES: str = [
 
 MESSAGE: str = ( Colors.White
     + "["
-    + Colors.Orange
+    + Colors.Green
     + "{}"
     + Colors.White
     + "] --> "
