@@ -1,7 +1,4 @@
 import os
-import json
-
-from modules.settings import UI
 
 
 class _MakeColors:
@@ -27,18 +24,22 @@ class _MakeColors:
     @staticmethod
     def _mixcolors(col1: str, col2: str, _reverse: bool = True) -> list:
         col1, col2 = _MakeColors._rmansi(col=col1), _MakeColors._rmansi(col=col2)
-        fade1 = Color.StaticMIX([col1, col2], _start=False)      
-        fade2 = Color.StaticMIX([fade1, col2], _start=False)
-        fade3 = Color.StaticMIX([fade1, col1], _start=False)
-        fade4 = Color.StaticMIX([fade2, col2], _start=False)
-        fade5 = Color.StaticMIX([fade1, fade3], _start=False)    
-        fade6 = Color.StaticMIX([fade3, col1], _start=False)
-        fade7 = Color.StaticMIX([fade1, fade2], _start=False)
+        fade1 = Colors.StaticMIX([col1, col2], _start=False)      
+        fade2 = Colors.StaticMIX([fade1, col2], _start=False)
+        fade3 = Colors.StaticMIX([fade1, col1], _start=False)
+        fade4 = Colors.StaticMIX([fade2, col2], _start=False)
+        fade5 = Colors.StaticMIX([fade1, fade3], _start=False)    
+        fade6 = Colors.StaticMIX([fade3, col1], _start=False)
+        fade7 = Colors.StaticMIX([fade1, fade2], _start=False)
         mixed = [col1, fade6, fade3, fade5, fade1, fade7, fade2, fade4, col2]
         return _MakeColors._reverse(colors=mixed) if _reverse else mixed
+    
 
-
-class Color:
+class Colors:
+    @staticmethod
+    def start(color: str) -> str: 
+        return f"\033[38;2;{color}m"
+    
     @staticmethod
     def _xspaces(text: str):
         try:
@@ -47,21 +48,21 @@ class Color:
             return 0
         ntextl = max((len(v) for v in text.splitlines() if v.strip()), default=0)
         return (col - ntextl) // 2
-
-    def DynamicMIX(colors: list):
-        mixed_colors = [_MakeColors._mixcolors(col1=colors[i], col2=colors[i+1], _reverse=False) for i in range(len(colors)-1)]
-        flattened_colors = [col for sublist in mixed_colors for col in sublist]
-        return _MakeColors._reverse(colors=flattened_colors)
     
     def StaticMIX(colors: list, _start: bool = True) -> str:
         rgb = [list(map(int, _MakeColors._rmansi(col).split(';'))) for col in colors]
         average_rgb = [round(sum(color[i] for color in rgb) / len(rgb)) for i in range(3)]
         rgb_string = ';'.join(map(str, average_rgb))
         return _MakeColors._start(rgb_string) if _start else rgb_string
+
+    def DynamicMIX(colors: list):
+        mixed_colors = [_MakeColors._mixcolors(col1=colors[i], col2=colors[i+1], _reverse=False) for i in range(len(colors)-1)]
+        flattened_colors = [col for sublist in mixed_colors for col in sublist]
+        return _MakeColors._reverse(colors=flattened_colors)
     
     def XCenter(text: str, spaces: int = None, icon: str = " "):
         if spaces is None:
-            spaces = Color._xspaces(text=text)
+            spaces = Colors._xspaces(text=text)
         return "\n".join((icon * spaces) + text for text in text.splitlines())
     
     def Diagonal(color: list, text: str, speed: int = 1, cut: int = 0) -> str:
@@ -86,17 +87,15 @@ class Color:
         mlength = max(len(line) for line in mbanner)
         fbanner = [line.ljust(mlength) for line in mbanner]
         return '\n'.join(fbanner)
-
-
-def load_ui(
-    colors: str, 
-    banner_key: str, 
-) -> None:
-    with open(UI, 'r', encoding='utf-8') as file:
-        banners = json.load(file)
-    print(
-        Color.Diagonal(
-            colors, 
-            Color.XCenter(Color.Add("\n".join(banners[banner_key])))
-        )
-    )
+    
+    
+    Red = start.__func__('255;0;0')
+    Blue = start.__func__('28;121;255')
+    Cyan = start.__func__('0;255;255')
+    Pink = start.__func__('255,192,203')
+    Black = start.__func__('0;0;0')
+    White = start.__func__('255;255;255')
+    Green = start.__func__('0;255;0')
+    Purple = start.__func__('255;0;255')
+    Yellow = start.__func__('255;255;0')
+    Orange = start.__func__('255;165;0')

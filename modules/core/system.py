@@ -4,13 +4,14 @@ import time
 import socket
 import shutil
 import os.path
-import pathlib
 import requests
 import subprocess
 
-from typing import NoReturn, Union
+from pathlib import Path
+from typing import NoReturn
 from modules.settings import VERSION
-from modules.core.utils import Colors, FRAMES, MESSAGE
+from modules.core.color import Colors
+from modules.core.utils import FRAMES, MESSAGE
 
 
 class Terminal:
@@ -74,7 +75,7 @@ class System:
         """
         remove pycache
         """
-        for root, dirs, files in os.walk(pathlib.Path.cwd()):
+        for root, dirs, files in os.walk(Path.cwd()):
             for dir_name in dirs:
                 if dir_name == "__pycache__":
                     pycache_dir = os.path.join(root, dir_name)
@@ -85,11 +86,11 @@ class System:
                     os.remove(pyc_file)
 
     @staticmethod
-    def local_ip() -> Union[str, dict]:
+    def local_ip() -> str:
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as dns:
                 dns.connect(("8.8.4.4", 80))
-                return dns.getsockname()
+                return dns.getsockname()[0]
         except Exception as error:
             raise error
         
