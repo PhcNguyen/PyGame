@@ -1,28 +1,43 @@
-import json
-
-from modules.settings import UI
-from modules.core.utils import Colors
+from modules.core.color import Colorate, Colors, Add
 
 
 def load_ui(
-    colors: str, 
-    banner_key: str, 
+    banner: str, 
 ) -> None:
-    with open(UI, 'r', encoding='utf-8') as file:
-        banners = json.load(file)
     print(
-        Colors.Diagonal(
-            colors, 
-            Colors.XCenter(Colors.Add("\n".join(banners[banner_key])))
+        Colorate.Diagonal(
+           Colors.DynamicMIX(
+               (Colors.green, Colors.white),
+               Add.Add(banner, None, center=True)
+           )
         )
     )
 
 
 def home() -> None:
-    color = Colors.DynamicMIX([Colors.White, Colors.Purple])
-    load_ui(color, 'home')
+    banner = """
+        ╔═════════════════════════════════════════════════════╗
+        ║ ███╗   ██╗██████║         ██████╗ ███████╗██╗   ██╗ ║
+        ║ ████╗  ██║██  ██║         ██╔══██╗██╔════╝██║   ██║ ║
+        ║ ██╔██╗ ██║██████║ ██████╗ ██║  ██║███████╗╚██╗ ██╔╝ ║
+        ║ ██║╚██╗██║██╔═══╝ ╚═════╝ ██║  ██║██╔════╝ ╚████╔╝  ║
+        ║ ██║ ╚████║██║             ██████╔╝███████╗  ╚██╔╝   ║
+        ║ ╚═╝  ╚═══╝╚═╝             ╚═════╝ ╚══════╝   ╚═╝    ║
+        ╠═════════════════════════════════════════════════════╣
+        ║> Author   : PhcNguyenz                              ║
+        ║> Support  : 0937.127.172                            ║
+        ╚═════════════════════════════════════════════════════╝
+    """
+    load_ui(banner)
 
 
 def menu() -> None:
-    color = Colors.DynamicMIX([Colors.White, Colors.Orange])
-    load_ui(color, 'menu')
+    banner = """
+        ╔══════════════════════════════════╗
+        ║               Menu               ║
+        ║ 1.Run Server                     ║
+        ║                                  ║
+        ║ 3.Github                         ║
+        ╚══════════════════════════════════╝
+    """
+    load_ui(banner)
