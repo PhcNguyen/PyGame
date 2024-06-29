@@ -1,4 +1,5 @@
-from modules.core.color import Colors
+from modules.core.style import Colors
+
 
 
 FRAMES: list[str] = [

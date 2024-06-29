@@ -6,12 +6,22 @@ import subprocess
 
 from socket import socket
 from typing import NoReturn
-from modules.settings import VERSION
-from modules.core.color import Colors
+from modules.core.style import Colors
 from modules.core.utils import FRAMES, MESSAGE
+from modules.core.settings import VERSION
+
 
 
 class System:
+    """
+    3 functions: 
+        clear()   |   Clears the terminal screen
+        command() |   Executes a system command
+        reset()   |   Resets the Python script by re-executing it
+        exit()    |   Exits the Python script
+        console() |   Prints a formatted message to the console
+        sleep()   |   Shows a countdown with a specified number of frames
+    """
     Windows = os.name == 'nt'
 
     @staticmethod
@@ -20,48 +30,30 @@ class System:
 
     @staticmethod
     def clear() -> int:
-        """
-        clear() | Clears the terminal screen.
-        """
         return os.system(
             "cls" if System.Windows else "clear"
         )
         
     @staticmethod
     def command(command: str) -> int:
-        """
-        command() | Executes a system command.
-        """
         return os.system(command)
 
     @staticmethod
     def reset() -> NoReturn:
-        """
-        reset() | Resets the Python script by re-executing it.
-        """
         return os.execv(
             sys.executable, ['python'] + sys.argv
         )
 
     @staticmethod
     def exit() -> NoReturn:
-        """
-        exit() | Exits the Python script.
-        """
         sys.exit()
 
     @staticmethod
     def console(name: str, color: str, message: str) -> None:
-        """
-        Console() | Prints a formatted message to the console.
-        """
         print(MESSAGE.format(name, getattr(Colors, color.lower()), str(message)))
 
     @staticmethod
     def sleep(times: int) -> None:
-        """
-        Sleep() | Shows a countdown with a specified number of frames.
-        """
         for i in range(times, 0, -1):
             for frame in FRAMES:
                 sys.stdout.write(f'{frame}[{Colors.Orange}{i:02}{Colors.White}]')
@@ -78,6 +70,7 @@ class System:
         except Exception as error:
             return error
     
+
 
 class Github:
     start = time.time()
