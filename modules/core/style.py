@@ -1,9 +1,4 @@
-import os
-from os import name as _name
-from os import get_terminal_size as _terminal_size
-from sys import stdout as _stdout
 from time import sleep as _sleep
-from threading import Thread as _thread
 
 
 

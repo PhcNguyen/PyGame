@@ -1,5 +1,6 @@
 from modules.core.style import Colors, Colorate, Add
 from modules.core.system import (
     System,
-    Github
+    Github,
 )
+from modules.core.settings import VERSION

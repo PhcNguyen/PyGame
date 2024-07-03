@@ -65,7 +65,7 @@ class System:
     def loaclIP() -> str:
         try:
             with socket() as dns:
-                dns.connect(("8.8.4.4", 80))
+                dns.connect(("8.8.8.8", 80))
                 return dns.getsockname()[0]
         except Exception as error:
             return error
@@ -76,11 +76,11 @@ class Github:
     start = time.time()
 
     @staticmethod
-    def connect() -> bool:
+    def connect(url: str | bytes) -> bool:
         try:
-            response = requests.get('https://github.com')
+            response = requests.get(url)
             if response.status_code == 200:
-                System.console('Ping', 'Orange', 'Connect to "github.com" successful')
+                System.console('Ping', 'Orange', f'Connect to "{url.split('/')[-1]}" successful')
                 return True
             else:
                 System.console('Ping', 'Red', f'Error: HTTP status code {response.status_code}')
@@ -103,7 +103,7 @@ class Github:
 
     @staticmethod
     def automatic() -> None:
-        if not Github.connect():
+        if not Github.connect('https://github.com'):
             System.exit()
         
         commands = [
