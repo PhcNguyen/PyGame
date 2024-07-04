@@ -1,5 +1,4 @@
-from modules.core import System, Colors, Github
-
+from modules.core import Github
 
 
 Github.automatic()
