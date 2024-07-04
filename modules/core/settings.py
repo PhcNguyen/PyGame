@@ -7,6 +7,3 @@ DEBUG = False
 
 
 VERSION = '1.0.1'
-
-
-PORT = 8888

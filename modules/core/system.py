@@ -4,7 +4,6 @@ import os.path
 import requests
 import subprocess
 
-from socket import socket
 from typing import NoReturn
 from modules.core.style import Colors
 from modules.core.utils import FRAMES, MESSAGE
@@ -14,13 +13,13 @@ from modules.core.settings import VERSION
 
 class System:
     """
-    3 functions: 
-        clear()   |   Clears the terminal screen
-        command() |   Executes a system command
-        reset()   |   Resets the Python script by re-executing it
-        exit()    |   Exits the Python script
-        console() |   Prints a formatted message to the console
-        sleep()   |   Shows a countdown with a specified number of frames
+    6 functions: 
+    - clear()   |   Clears the terminal screen
+    - command() |   Executes a system command
+    - reset()   |   Resets the Python script by re-executing it
+    - exit()    |   Exits the Python script
+    - console() |   Prints a formatted message to the console
+    - sleep()   |   Shows a countdown with a specified number of frames
     """
     Windows = os.name == 'nt'
 
@@ -60,15 +59,6 @@ class System:
                 sys.stdout.flush()
                 time.sleep(0.125)
         sys.stdout.write('\r')    
-
-    @staticmethod
-    def loaclIP() -> str:
-        try:
-            with socket() as dns:
-                dns.connect(("8.8.8.8", 80))
-                return dns.getsockname()[0]
-        except Exception as error:
-            return error
     
 
 
@@ -80,7 +70,7 @@ class Github:
         try:
             response = requests.get(url)
             if response.status_code == 200:
-                System.console('Ping', 'Orange', f'Connect to "{url.split('/')[-1]}" successful')
+                System.console('Ping', 'Orange', f'Connect to "{url.split('//')[-1]}" successful')
                 return True
             else:
                 System.console('Ping', 'Red', f'Error: HTTP status code {response.status_code}')

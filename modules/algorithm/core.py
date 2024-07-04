@@ -1,4 +1,4 @@
-from random import randrange, sample, shuffle
+from random import randrange, shuffle, randint
 
 
 
@@ -15,6 +15,9 @@ def listNumber(
     - list[int]: List containing odd and even numbers based on the ratio.
     - None: If the ratio is invalid.
     '''
+    if not 0 < ratio < 1:
+        return None
+    
     odd_count: int = int(100 * ratio)
     even_count: int = 100 - odd_count
 
@@ -28,7 +31,7 @@ def listNumber(
         numbers: list[int] = odd + even; shuffle(numbers)
 
         return numbers
-    except Exception:
+    except KeyError:
         return None
 
 
@@ -38,6 +41,7 @@ def rollDice() -> (tuple[int, list[str]] | None):
 
     Returns:
     - tuple[int, list[str]]: Sum of the dice and a list of dice icons.
+    - None: If an error occurs.
     '''
     dice_icon: dict[int, str] = {
         1: '⚀', 2: '⚁', 
@@ -45,10 +49,10 @@ def rollDice() -> (tuple[int, list[str]] | None):
         5: '⚄', 6: '⚅',
     }
     try:
-        numbers: list[int] = sample(range(1, 7), 3)
-        total = sum(numbers)
-        icons = [dice_icon[n] for n in numbers]
+        numbers: list[int] = [randint(1, 6) for _ in range(3)]
+        total: int = sum(numbers)
+        icons: list[str] = [dice_icon[n] for n in numbers]
         
         return total, icons
-    except:
+    except KeyError:
         return None
