@@ -443,12 +443,10 @@ class Colorate:
 
 
 class Add:
-
     """
     1 function:
         Add()           |           allow you to add a text to another, and even center it
     """
-
     def Add(banner1, banner2, spaces=0, center=False):
         if center:
             split1 = len(banner1.splitlines())

@@ -4,10 +4,10 @@ import os.path
 import requests
 import subprocess
 
+from pathlib import Path
 from typing import NoReturn
 from modules.core.style import Colors
 from modules.core.utils import FRAMES, MESSAGE
-from modules.core.settings import VERSION
 
 
 
@@ -64,6 +64,9 @@ class System:
 
 class Github:
     start = time.time()
+    version = os.path.join(
+        Path(__file__).resolve().parent.parent, '.version'
+    )
 
     @staticmethod
     def connect(url: str | bytes) -> bool:
@@ -98,7 +101,7 @@ class Github:
         
         commands = [
                 (['git', 'add', '.'], 'git add .'),
-                (['git', 'commit', '-m', VERSION], f'git commit -m "{VERSION}"'),
+                (['git', 'commit', '-m', Github.version], f'git commit -m "{Github.version}"'),
                 (['git', 'push', 'origin', 'main'], 'git push origin main')
         ]
         for command in commands:

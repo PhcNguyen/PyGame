@@ -3,4 +3,3 @@ from modules.core.system import (
     System,
     Github,
 )
-from modules.core.settings import VERSION

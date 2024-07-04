@@ -1,3 +1,5 @@
+import sys
+import time
 from random import randrange, shuffle, randint
 
 
@@ -52,9 +54,8 @@ def rollDice() -> (tuple[int, list[str]] | None):
     - None: If an error occurs.
     '''
     dice_icon: dict[int, str] = {
-        1: '⚀', 2: '⚁', 
-        3: '⚂', 4: '⚃', 
-        5: '⚄', 6: '⚅',
+        1: '⚀', 2: '⚁', 3: '⚂', 
+        4: '⚃', 5: '⚄', 6: '⚅',
     }
     try:
         numbers: list[int] = [randint(1, 6) for _ in range(3)]
@@ -64,3 +65,22 @@ def rollDice() -> (tuple[int, list[str]] | None):
         return total, icons
     except KeyError:
         return None
+
+
+def spins(number):
+    delay = 0.002
+    space = ' '*5
+    crossbar = [
+        f"\n{space}╔══════════╗",
+        f"\n{space}╚══════════╝\n"
+    ]
+    
+    print(crossbar[0])
+    
+    while delay < 0.1:
+        number = (number % 98) + 1
+        print(f"{space}║ -> {number:02d} <- ║", end='\r')
+        time.sleep(delay)
+        delay += 0.001
+    
+    print(crossbar[-1])
