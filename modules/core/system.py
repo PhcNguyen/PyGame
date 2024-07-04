@@ -64,9 +64,11 @@ class System:
 
 class Github:
     start = time.time()
-    version = os.path.join(
-        Path(__file__).resolve().parent.parent, '.version'
-    )
+    version = open(
+        os.path.join(
+            Path(__file__).resolve().parent.parent, '.version'
+        )
+    ).read()
 
     @staticmethod
     def connect(url: str | bytes) -> bool:
