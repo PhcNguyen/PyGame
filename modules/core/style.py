@@ -3,9 +3,6 @@ from time import sleep as _sleep
 
 
 class _MakeColors:
-
-    """ ! developper area ! """
-
     def _makeansi(col: str, text: str) -> str:
         return f"\033[38;2;{col}m{text}\033[38;2;255;255;255m"
 
@@ -59,6 +56,8 @@ class _MakeColors:
         mixed = [col1, fade6, fade3, fade5, fade1, fade7, fade2, fade4, col2]
         return _MakeColors._reverse(colors=mixed) if _reverse else mixed 
 
+
+
 class Colors:
 
     """
@@ -111,106 +110,76 @@ class Colors:
             for col in col:
                 final.append(col)
         return _MakeColors._reverse(colors=final)
-            
-
-
-    """ symbols """
 
     def Symbol(symbol: str, col: str, col_left_right: str, left: str = '[', right: str = ']') -> str:
         return f"{col_left_right}{left}{col}{symbol}{col_left_right}{right}{_MakeColors._start('255;255;255')}"
-
-
-    """ dynamic colors """
 
     black_to_white = ["m;m;m"]
     black_to_red = ["m;0;0"]
     black_to_green = ["0;m;0"]
     black_to_blue = ["0;0;m"]
-
     white_to_black = ["n;n;n"]
     white_to_red = ["255;n;n"]
     white_to_green = ["n;255;n"]
     white_to_blue = ["n;n;255"]
-
     red_to_black = ["n;0;0"]
     red_to_white = ["255;m;m"]
     red_to_yellow = ["255;m;0"]
     red_to_purple = ["255;0;m"]
-
     green_to_black = ["0;n;0"]
     green_to_white = ["m;255;m"]
     green_to_yellow = ["m;255;0"]
     green_to_cyan = ["0;255;m"]
-
     blue_to_black = ["0;0;n"]
     blue_to_white = ["m;m;255"]
     blue_to_cyan = ["0;m;255"]
     blue_to_purple = ["m;0;255"]
-
     yellow_to_red = ["255;n;0"]
     yellow_to_green = ["n;255;0"]
-
     purple_to_red = ["255;0;n"]
     purple_to_blue = ["n;0;255"]
-
     cyan_to_green = ["0;255;n"]
     cyan_to_blue = ["0;n;255"]
 
-
     red_to_blue = ...
     red_to_green = ...
-
     green_to_blue = ...
     green_to_red = ...
-
     blue_to_red = ...
     blue_to_green = ...
-
     rainbow = ...
-
-    """ static colors """
 
     red = _MakeColors._start('255;0;0')
     green = _MakeColors._start('0;255;0')
     blue = _MakeColors._start('0;0;255')
-
     white = _MakeColors._start('255;255;255')
     black = _MakeColors._start('0;0;0')
     gray = _MakeColors._start('150;150;150')
-
     yellow = _MakeColors._start('255;255;0')
     purple = _MakeColors._start('255;0;255')
     cyan = _MakeColors._start('0;255;255')
-
     orange = _MakeColors._start('255;150;0')
     pink = _MakeColors._start('255;0;150')
     turquoise = _MakeColors._start('0;150;255')
-
     light_gray = _MakeColors._start('200;200;200')
     dark_gray = _MakeColors._start('100;100;100')
-
     light_red = _MakeColors._start('255;100;100')
     light_green = _MakeColors._start('100;255;100')
     light_blue = _MakeColors._start('100;100;255')
-
     dark_red = _MakeColors._start('100;0;0')
     dark_green = _MakeColors._start('0;100;0')
     dark_blue = _MakeColors._start('0;0;100')
 
     reset = white
 
-    """ ! developper area ! """
-
     col = (list, str)
 
     dynamic_colors = [
         black_to_white, black_to_red, black_to_green, black_to_blue,
         white_to_black, white_to_red, white_to_green, white_to_blue,
-
         red_to_black, red_to_white, red_to_yellow, red_to_purple,
         green_to_black, green_to_white, green_to_yellow, green_to_cyan,
         blue_to_black, blue_to_white, blue_to_cyan, blue_to_purple,
-
         yellow_to_red, yellow_to_green,
         purple_to_red, purple_to_blue,
         cyan_to_green, cyan_to_blue
@@ -219,36 +188,28 @@ class Colors:
     for color in dynamic_colors:
         _col = 20
         reversed_col = 220
-
         dbl_col = 20
         dbl_reversed_col = 220
-
         content = color[0]
         color.pop(0)
 
         for _ in range(12):
-
             if 'm' in content:
                 result = content.replace('m', str(_col))
                 color.append(result)
-
             elif 'n' in content:
                 result = content.replace('n', str(reversed_col))
                 color.append(result)
-
             _col += 20
             reversed_col -= 20
 
         for _ in range(12):
-
             if 'm' in content:
                 result = content.replace('m', str(dbl_reversed_col))
                 color.append(result)
-
             elif 'n' in content:
                 result = content.replace('n', str(dbl_col))
                 color.append(result)
-
             dbl_col += 20
             dbl_reversed_col -= 20
 
@@ -304,8 +265,6 @@ class Colorate:
             DiagonalBackwards()     |           fade a text diagonally but backwards
     """
 
-    """ fix/static colors """
-
     def Color(color: str, text: str, end: bool = True) -> str:
         return _MakeColors._maketext(color=color, text=text, end=end)
 
@@ -317,23 +276,19 @@ class Colorate:
         else:
             print(content)
             var = None
-
         if wait is True:
             exit()
         elif wait is not False:
             _sleep(wait)
-
         return var
-
-    """ faded/dynamic colors"""
 
     def Vertical(color: list, text: str, speed: int = 1, start: int = 0, stop: int = 0, cut: int = 0, fill: bool = False) -> str:
         color = color[cut:]
         lines = text.splitlines()
         result = ""
-
         nstart = 0
         color_n = 0
+
         for lin in lines:
             colorR = color[color_n]
             if fill:
@@ -344,11 +299,9 @@ class Colorate:
                 result += " " * \
                     _MakeColors._getspaces(
                         lin) + _MakeColors._makeansi(colorR, lin.strip()) + "\n"  
-
             if nstart != start:
                 nstart += 1
                 continue
-
             if lin.rstrip():
                 if (
                     stop == 0
@@ -361,14 +314,12 @@ class Colorate:
                     color_n = 0
                 else:
                     color_n = stop
-
         return result.rstrip()
 
     def Horizontal(color: list, text: str, speed: int = 1, cut: int = 0) -> str:
         color = color[cut:]
         lines = text.splitlines()
         result = ""
-
         for lin in lines:
             carac = list(lin)
             color_n = 0
@@ -385,7 +336,6 @@ class Colorate:
         return result.rstrip()
 
     def Diagonal(color: list, text: str, speed: int = 1, cut: int = 0) -> str:
-
         color = color[cut:]
         lines = text.splitlines()
         result = ""
@@ -402,12 +352,10 @@ class Colorate:
                 else:
                     color_n = 1
             result += "\n"
-
         return result.rstrip()
 
     def DiagonalBackwards(color: list, text: str, speed: int = 1, cut: int = 0) -> str:
         color = color[cut:]
-
         lines = text.splitlines()
         result = ""
         resultL = ''
@@ -459,19 +407,14 @@ class Add:
                 spaces = 0
 
         if spaces > max(len(banner1.splitlines()), len(banner2.splitlines())):
-            # raise Banner.MaximumSpaces(spaces)
             spaces = max(len(banner1.splitlines()), len(banner2.splitlines()))
 
         ban1 = banner1.splitlines()
         ban2 = banner2.splitlines()
-
         ban1count = len(ban1)
         ban2count = len(ban2)
-
         size = Add._length(ban1)
-
         ban1 = Add._edit(ban1, size)
-
         ban1line = 0
         ban2line = 0
         text = ''
@@ -481,27 +424,20 @@ class Add:
             if ban1count >= ban2count:
                 ban1data = ban1[ban1line]
                 ban2data = ''
-
                 ban1line += 1
-
             else:
                 ban1data = " " * size
                 ban2data = ban2[ban2line]
-
                 ban2line += 1
 
             text = text + ban1data + ban2data + '\n'
         while ban1line < ban1count or ban2line < ban2count:
-
             ban1data = ban1[ban1line] if ban1line < ban1count else " " * size
             ban2data = ban2[ban2line] if ban2line < ban2count else ""
             text = text + ban1data + ban2data + '\n'
-
             ban1line += 1
             ban2line += 1
         return text
-
-    """ ! developper area ! """
 
     class MaximumSpaces(Exception):
         def __init__(self, spaces: str):
@@ -517,4 +453,3 @@ class Add:
 
     def _edit(ban1, size):
         return [line + (size - len(line)) * " " for line in ban1]
-

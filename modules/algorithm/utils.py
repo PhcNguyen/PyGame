@@ -1,4 +1,3 @@
-import sys
 import time
 from random import randrange, shuffle, randint
 
@@ -14,7 +13,7 @@ conditions: dict[int, list[int]] = {
 
 def listNumber(
     ratio: float = 0.7
-) -> (list[int] | None):
+) -> (list[int] | False):
     '''
     Generate a list of numbers with a specified ratio of odd to even numbers.
     
@@ -23,10 +22,10 @@ def listNumber(
 
     Returns:
     - list[int]: List containing odd and even numbers based on the ratio.
-    - None: If the ratio is invalid.
+    - False: If the ratio is invalid.
     '''
     if not 0 < ratio < 1:
-        return None
+        return False
     
     odd_count: int = int(100 * ratio)
     even_count: int = 100 - odd_count
@@ -42,16 +41,17 @@ def listNumber(
 
         return numbers
     except KeyError:
-        return None
+        return False
 
 
-def rollDice() -> (tuple[int, list[str]] | None):
+def rollDice(
+) -> (tuple[int, list[str]] | False):
     '''
     Simulate rolling three dice.
 
     Returns:
     - tuple[int, list[str]]: Sum of the dice and a list of dice icons.
-    - None: If an error occurs.
+    - False: If an error occurs.
     '''
     dice_icon: dict[int, str] = {
         1: '⚀', 2: '⚁', 3: '⚂', 
@@ -64,23 +64,27 @@ def rollDice() -> (tuple[int, list[str]] | None):
         
         return total, icons
     except KeyError:
-        return None
+        return False
 
 
-def spins(number):
-    delay = 0.002
-    space = ' '*5
-    crossbar = [
-        f"\n{space}╔══════════╗",
-        f"\n{space}╚══════════╝\n"
-    ]
-    
-    print(crossbar[0])
-    
-    while delay < 0.1:
-        number = (number % 98) + 1
-        print(f"{space}║ -> {number:02d} <- ║", end='\r')
-        time.sleep(delay)
-        delay += 0.001
-    
-    print(crossbar[-1])
+def spins(number) -> bool:
+    try:
+        delay = 0.002
+        space = ' '*5
+        crossbar = [
+            f"\n{space}╔══════════╗",
+            f"\n{space}╚══════════╝\n"
+        ]
+        
+        print(crossbar[0])
+        
+        while delay < 0.1:
+            number = (number % 98) + 1
+            print(f"{space}║ -> {number:02d} <- ║", end='\r')
+            time.sleep(delay)
+            delay += 0.001
+        
+        print(crossbar[-1])
+        return True
+    except KeyError:
+        return False
