@@ -376,7 +376,7 @@ class Colorate:
             result = result + '\n' + resultL
         return result.strip()
 
-    def Format(text: str, second_chars: list, mode, principal_col: Colors.col, second_col: str):
+    def Format(text: str, second_chars: list, mode, principal_col, second_col: str):
         if mode == Colorate.Vertical:
             ctext = mode(principal_col, text, fill=True)
         else:

@@ -1,4 +1,4 @@
-from modules.core import Github
+from modules.core.system import Github
 
 
 Github.automatic()

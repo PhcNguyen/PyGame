@@ -3,17 +3,9 @@ from random import randrange, shuffle, randint
 
 
 
-conditions: dict[int, list[int]] = {
-    1: [11, 12, 13, 14, 15, 16, 17],  # Tai
-    2: [4, 5, 6, 7, 8, 9, 10],        # Xiu
-    3: [4, 6, 8, 10, 12, 14, 16, 18], # Chan
-    4: [3, 5, 7, 9, 11, 13, 15, 17]   # Le
-}
-
-
 def listNumber(
     ratio: float = 0.7
-) -> (list[int] | False):
+) -> (list[int] | bool):
     '''
     Generate a list of numbers with a specified ratio of odd to even numbers.
     
@@ -22,7 +14,7 @@ def listNumber(
 
     Returns:
     - list[int]: List containing odd and even numbers based on the ratio.
-    - False: If the ratio is invalid.
+    - bool: If the ratio is invalid.
     '''
     if not 0 < ratio < 1:
         return False
@@ -45,13 +37,13 @@ def listNumber(
 
 
 def rollDice(
-) -> (tuple[int, list[str]] | False):
+) -> (tuple[int, list[str]] | bool):
     '''
     Simulate rolling three dice.
 
     Returns:
     - tuple[int, list[str]]: Sum of the dice and a list of dice icons.
-    - False: If an error occurs.
+    - bool: If an error occurs.
     '''
     dice_icon: dict[int, str] = {
         1: '⚀', 2: '⚁', 3: '⚂', 
@@ -68,19 +60,18 @@ def rollDice(
 
 
 def spins(number) -> bool:
+    delay = 0.002
+    space = ' '*5
+    crossbar = [
+        f"\n{space}╔══════════╗",
+        f"\n{space}╚══════════╝\n"
+    ]
     try:
-        delay = 0.002
-        space = ' '*5
-        crossbar = [
-            f"\n{space}╔══════════╗",
-            f"\n{space}╚══════════╝\n"
-        ]
-        
         print(crossbar[0])
         
         while delay < 0.1:
             number = (number % 98) + 1
-            print(f"{space}║ -> {number:02d} <- ║", end='\r')
+            print(space + f"║ -> {number:02d} <- ║", end='\r')
             time.sleep(delay)
             delay += 0.001
         
@@ -88,3 +79,20 @@ def spins(number) -> bool:
         return True
     except KeyError:
         return False
+
+
+def checkDice(select, numbers) -> int:
+    # Dictionary containing conditions for different selections
+    conditions: dict[int, list[int]] = {
+        1: [11, 12, 13, 14, 15, 16, 17],  # Tai (big)
+        2: [4, 5, 6, 7, 8, 9, 10],        # Xiu (small)
+        3: [4, 6, 8, 10, 12, 14, 16, 18], # Chan (even)
+        4: [3, 5, 7, 9, 11, 13, 15, 17]   # Le (odd)
+    }
+
+    # Check if the selected category exists in the conditions dictionary
+    if select in conditions:
+        # Return 1 if the number is in the selected condition list, otherwise return 0
+        return int(numbers in conditions[select])
+    # Return 0 if the selected category does not exist in the conditions dictionary
+    return 0
