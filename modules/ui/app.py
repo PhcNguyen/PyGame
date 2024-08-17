@@ -1,12 +1,14 @@
+import os
 import sys
 from modules.core.style import Colors, Colorate
 
 
 
 def crossbar() -> None:
-    for _ in range(13):
+    terminal_size = os.get_terminal_size()
+    for _ in range(terminal_size.columns // 2):
         sys.stdout.write(
-            Colors.white + "▂" + {Colors.red} + "▂"
+            f"{Colors.white}▂{Colors.red}▂"
         )
     sys.stdout.write("\n")
 

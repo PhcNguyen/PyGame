@@ -66,7 +66,7 @@ class Github:
     start = time.time()
     version = open(
         os.path.join(
-            Path(__file__).resolve().parent.parent, '.version'
+            Path(__file__).resolve().parent.parent, 'version'
         )
     ).read()
 
