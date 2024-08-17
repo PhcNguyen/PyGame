@@ -1,6 +1,8 @@
 import socket
 import sqlite3
 
+from server.settings import DATABASE_PATH
+
 
 def localIP() -> str:
     # Create a dummy connection to determine the local IP without sending data
@@ -9,9 +11,9 @@ def localIP() -> str:
         return s.getsockname()[0]
 
 
-def create_database():
+def createDatabase():
     # Kết nối đến cơ sở dữ liệu (tạo mới nếu chưa tồn tại)
-    conn = sqlite3.connect('database/user.sql')
+    conn = sqlite3.connect(DATABASE_PATH)
     
     # Tạo đối tượng cursor để thực thi các câu lệnh SQL
     c = conn.cursor()
@@ -30,6 +32,3 @@ def create_database():
     conn.commit()
     conn.close()
     print("Database and table created successfully.")
-
-
-create_database()
