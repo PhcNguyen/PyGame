@@ -1,14 +1,7 @@
-import pathlib
-
-from server.utils import localIP
+from modules.system import System
 
 
 
 DEBUG = True
-
-BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
-DATABASE_PATH = BASE_DIR / 'database' / 'user.sql'
-
-
-HOST = localIP()
 PORT = 19000
+HOST = System.localIP()

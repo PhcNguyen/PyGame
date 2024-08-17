@@ -1,3 +1,3 @@
-from server.core import Github
+from modules.system import Github
 
 Github.automatic()

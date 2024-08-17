@@ -1,0 +1,129 @@
+import pathlib
+import sqlite3
+
+from typing import Union
+
+
+def sqlConnection() -> sqlite3.Connection:
+    return sqlite3.connect(
+        pathlib.Path(__file__).resolve().parent.parent / 'database' / 'user.sql'
+    )
+
+
+def isUsernameExists(username: str) -> bool:
+    """Kiểm tra xem username có tồn tại trong cơ sở dữ liệu hay không."""
+    try:
+        conn = sqlConnection()
+        c = conn.cursor()
+        c.execute('SELECT 1 FROM users WHERE username = ?', (username,))
+        result = c.fetchone()  
+        conn.close()
+        # Trả về True nếu username đã tồn tại, False nếu không
+        return result is not None
+    except: return False
+
+
+def createDatabase() -> bool:
+    try:
+        conn = sqlConnection()
+        c = conn.cursor()
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                uid INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL,
+                coin INTEGER DEFAULT 0
+            )
+        ''')
+        conn.commit()
+        return True
+    except: return False
+    finally: conn.close()
+
+
+def createAccount(username: str, password: str) -> bool:
+    """Tạo người dùng mới với 0 coin."""
+    try:
+        conn = sqlConnection()
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO users (username, password, coin)
+            VALUES (?, ?, ?)
+        ''', (username, password, 0))
+        conn.commit()
+        return True
+    # Trả về False để chỉ lỗi khi tạo người dùng
+    except sqlite3.IntegrityError: return False 
+    finally: conn.close()
+    
+
+
+def loginAccount(username: str, password: str) -> Union[int | bool]:
+    """Xác thực người dùng dựa trên username và password."""
+    try:
+        conn = sqlConnection()
+        c = conn.cursor()
+        c.execute('''
+            SELECT uid FROM users WHERE username = ? AND password = ?
+        ''', (username, password))
+        result = c.fetchone()
+        if result:
+            return result[0] #coin
+        return False
+    except sqlite3.Error: return False
+    finally: conn.close()
+
+
+def updatePassword(username: str, new_password: str) -> bool:
+    """Cập nhật mật khẩu của người dùng dựa trên username."""
+    try:
+        conn = sqlConnection()
+        c = conn.cursor()
+        c.execute('''
+            UPDATE users SET password = ? WHERE username = ?
+        ''', (new_password, username))
+        if c.rowcount == 0:
+            conn.rollback()
+            return False
+        conn.commit()
+        return True
+    except sqlite3.Error: return False
+    finally: conn.close()
+
+
+def updateCoin(username: str, additional_coins: int) -> bool:
+    """Cập nhật số xu của người dùng bằng cách cộng thêm số xu mới."""
+    try:
+        conn = sqlConnection()
+        c = conn.cursor()
+        c.execute('''
+            SELECT coin FROM users WHERE username = ?
+        ''', (username,))
+        result = c.fetchone()
+        if result:
+            current_coins = result[0]
+            new_coin_amount = current_coins + additional_coins
+            c.execute('''
+                UPDATE users SET coin = ? WHERE username = ?
+            ''', (new_coin_amount, username))
+            conn.commit()
+            return True
+        else: return False
+    except sqlite3.Error: return False
+    finally: conn.close()
+
+
+def deleteUser(uid: int) -> bool:
+    """Xóa người dùng dựa trên uid và trả về True nếu thành công, False nếu thất bại."""
+    try:
+        conn = sqlConnection()
+        c = conn.cursor()
+        c.execute('''
+            DELETE FROM users WHERE uid = ?
+        ''', (uid,))
+        conn.commit()
+        if c.rowcount > 0:
+            return True
+        else: return False
+    except sqlite3.Error: return False 
+    finally: conn.close()

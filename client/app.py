@@ -1,6 +1,6 @@
 import os
 import sys
-from modules.core.style import Colors, Colorate
+from modules.style import Colors, Colorate
 
 
 
