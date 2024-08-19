@@ -1,34 +1,38 @@
-from random import randrange, shuffle, randint, choice
+import random
 
 
 
-def listNumber(
-    ratio: float = 0.7
-) -> list[int] | bool:
+def ratioNumber(ratio: float = 0.7) -> int:
     '''
-    Generate a list of numbers with a specified ratio of odd to even numbers.
+    Generate a list of 100 numbers with a specified ratio of odd to even numbers
+    and return one random number from the list. Returns -1 if the ratio is invalid.
     
     Parameters:
-    - ratio (float): The ratio of odd to even numbers (0.1 to 1.0).
-
+    - ratio (float): The ratio of odd to even numbers (0.0 to 1.0).
+    
     Returns:
-    - list[int]: List containing odd and even numbers based on the ratio.
-    - bool: If the ratio is invalid.
+    - int: A single number from the generated list based on the ratio.
+           Returns -1 if the ratio is invalid.
     '''
     if not 0.0 <= ratio <= 1.0:
-        return False
-    
-    numbers: list[int] = [
-        randrange(1, 99, 2) if i < int(100 * ratio) 
-        else randrange(2, 99, 2) 
+        return -1  # Use -1 to indicate invalid ratio
+
+    # Generate list of numbers with the desired ratio of odd to even
+    numbers = [
+        random.randrange(1, 100, 2) if i < int(100 * ratio)
+        else random.randrange(2, 100, 2)
         for i in range(100)
     ]
-    shuffle(numbers)
-    numbers = choice(numbers)
-    return numbers
+    
+    # Shuffle the list to ensure randomness
+    random.shuffle(numbers)
+    
+    # Return a single number from the list
+    return random.choice(numbers)
 
 
-def rollDice() -> tuple[int, list[str]] | bool:
+
+def rollDice() -> (tuple[int, list[str]] | bool):
     '''
     Simulate rolling three dice.
 
@@ -41,7 +45,7 @@ def rollDice() -> tuple[int, list[str]] | bool:
         4: '⚃', 5: '⚄', 6: '⚅',
     }
     
-    numbers: list[int] = [randint(1, 6) for _ in range(3)]
+    numbers: list[int] = [random.randint(1, 6) for _ in range(3)]
     total: int = sum(numbers)
     icons: list[str] = [dice_icon[n] for n in numbers]
     

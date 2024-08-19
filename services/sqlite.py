@@ -99,11 +99,8 @@ def updatePassword(username: str, old_password: str, new_password: str) -> bool:
                     return False
                 conn.commit()
                 return True
-            else:
-                return False  # Mật khẩu cũ không đúng
-        else:
-            return False  # Tên người dùng không tồn tại
-
+            return False  # Mật khẩu cũ không đúng
+        return False  # Tên người dùng không tồn tại
     except sqlite3.Error: return False
     finally: conn.close()
 
@@ -129,14 +126,30 @@ def updateCoin(username: str, password: str, additional_coins: int) -> bool:
                 ''', (new_coin_amount, username))
                 conn.commit()
                 return True
-            else:
-                return False  # Mật khẩu không đúng
-        else:
-            return False  # Tên người dùng không tồn tại
-    except sqlite3.Error as e:
-        return False
-    finally:
-        conn.close()
+            return False  # Mật khẩu không đúng
+        return False  # Tên người dùng không tồn tại
+    except sqlite3.Error: return False
+    finally: conn.close()
+
+
+def checkCoin(username: str, required_coins: int) -> bool:
+    """Kiểm tra xem người dùng có đủ số xu yêu cầu hay không."""
+    try:
+        conn = sqlConnection()
+        c = conn.cursor()
+
+        # Lấy số xu của người dùng
+        c.execute('''
+            SELECT coin FROM users WHERE username = ?
+        ''', (username,))
+        result = c.fetchone()
+
+        if result:
+            current_coins = result[0]
+            return current_coins >= required_coins  # Kiểm tra số xu có đủ không
+        return False  # Người dùng không tồn tại
+    except sqlite3.Error: return False
+    finally: conn.close()
 
 
 def deleteUser(uid: int) -> bool:
