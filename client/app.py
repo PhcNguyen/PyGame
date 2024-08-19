@@ -1,19 +1,85 @@
-import os
-import sys
-from modules.style import Colors, Colorate
+from os import get_terminal_size
+from sys import stdout
+
+from modules.style import Colors
 
 
 
-def crossbar() -> None:
-    terminal_size = os.get_terminal_size()
-    for _ in range(terminal_size.columns // 2):
-        sys.stdout.write(
-            f"{Colors.white}▂{Colors.red}▂"
-        )
-    sys.stdout.write("\n")
+HOME = '''
+╔══════════════════════════════════╗
+║               HOME               ║
+║                                  ║
+║ 1.REGISTER - ĐĂNG KÝ             ║
+║ 2.LOGIN - ĐĂNG NHẬP    0.EXIT    ║
+╚══════════════════════════════════╝
+'''
+
+MENU = '''
+╔══════════════════════════════════╗
+║               MENU               ║
+║ 1.SPINS                4.CODE    ║
+║ 2.DICE                           ║
+║ 3.BANKING COIN         0.EXIT    ║
+╚══════════════════════════════════╝
+'''
+
+DICE = '''
+╔══════════════════════════════════╗
+║               DICE               ║
+║                                  ║
+║                                  ║
+╚══════════════════════════════════╝
+'''
+
+SPINS = '''
+╔══════════════════════════════════╗
+║              SPINS               ║
+║                                  ║
+║                                  ║
+╚══════════════════════════════════╝
+'''
+
+LOGIN = '''
+╔══════════════════════════════════╗
+║        LOGIN - ĐĂNG NHẬP         ║
+║                                  ║
+║                                  ║
+╚══════════════════════════════════╝
+'''
+
+REGISTER = '''
+╔══════════════════════════════════╗
+║        REGISTER - ĐĂNG KÝ        ║
+║                                  ║
+║                                  ║
+╚══════════════════════════════════╝
+'''
 
 
-def menu() -> None:
-    text = b'\xe2\x95\x94\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x97\n\xe2\x95\x911.Register   3.BXH \xe2\x95\x91\n\xe2\x95\x912.Login      0.EXIT\xe2\x95\x91\n\xe2\x95\x9a\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x9d'.decode()
-    print(text)
-    crossbar()
+def drawDivider() -> bool:
+    try:
+        terminal_size = get_terminal_size().columns
+        stdout.write(f"{Colors.white}▂{Colors.red}▂" * (terminal_size // 2) + "\n")
+        return True
+    except Exception: return False
+
+
+
+class App:
+    @staticmethod
+    def render_frame(frame: str) -> None:
+        print(frame)
+        drawDivider()
+
+    @staticmethod
+    def home(): App.render_frame(HOME)
+    @staticmethod
+    def menu(): App.render_frame(MENU)
+    @staticmethod
+    def dice(): App.render_frame(DICE)
+    @staticmethod
+    def spins(): App.render_frame(SPINS)
+    @staticmethod
+    def login(): App.render_frame(LOGIN)
+    @staticmethod
+    def register(): App.render_frame(REGISTER)

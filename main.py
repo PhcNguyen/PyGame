@@ -1,3 +1,5 @@
-from modules.system import Github
+from services.core import Server
+from services.settings import HOST, PORT
 
-Github.automatic()
+
+Server(HOST, PORT).listening()

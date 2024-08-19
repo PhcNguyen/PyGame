@@ -22,6 +22,14 @@ def createDatabase() -> bool:
                 coin INTEGER DEFAULT 0
             )
         ''')
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS history (
+                hid INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL,
+                action TEXT NOT NULL,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
         conn.commit()
         return True
     except: return False
@@ -40,7 +48,22 @@ def isUsernameExists(username: str) -> bool:
         return result is not None
     except: return False
 
-    
+
+def logHistory(username: str, action: str) -> None:
+    """Ghi lại lịch sử hành động của người dùng."""
+    try:
+        conn = sqlConnection()
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO history (username, action)
+            VALUES (?, ?)
+        ''', (username, action))
+        conn.commit()
+    except sqlite3.Error: return False
+    finally: conn.close()
+
+
+
 def createAccount(username: str, password: str) -> bool:
     """Tạo người dùng mới với 0 coin."""
     try:
@@ -64,11 +87,11 @@ def loginAccount(username: str, password: str) -> Union[int | bool]:
         conn = sqlConnection()
         c = conn.cursor()
         c.execute('''
-            SELECT uid FROM users WHERE username = ? AND password = ?
+            SELECT coin FROM users WHERE username = ? AND password = ?
         ''', (username, password))
         result = c.fetchone()
         if result:
-            return result[0] #coin
+            return True
         return False
     except sqlite3.Error: return False
     finally: conn.close()
@@ -124,6 +147,7 @@ def updateCoin(username: str, password: str, additional_coins: int) -> bool:
                 c.execute('''
                     UPDATE users SET coin = ? WHERE username = ?
                 ''', (new_coin_amount, username))
+                logHistory(username, f'updateCoin: {additional_coins}')
                 conn.commit()
                 return True
             return False  # Mật khẩu không đúng
@@ -152,6 +176,23 @@ def checkCoin(username: str, required_coins: int) -> bool:
     finally: conn.close()
 
 
+def getCoin(username: str) -> int:
+    """Lấy số xu hiện tại của người dùng."""
+    try:
+        conn = sqlConnection()
+        c = conn.cursor()
+        c.execute('''
+            SELECT coin FROM users WHERE username = ?
+        ''', (username,))
+        
+        result = c.fetchone()
+        if result:
+            return result[0]  # Trả về số xu hiện tại
+        return 0  # Nếu người dùng không tồn tại, trả về 0 xu
+    except sqlite3.Error: return 0
+    finally: conn.close()
+
+
 def deleteUser(uid: int) -> bool:
     """Xóa người dùng dựa trên uid và trả về True nếu thành công, False nếu thất bại."""
     try:
@@ -161,8 +202,7 @@ def deleteUser(uid: int) -> bool:
             DELETE FROM users WHERE uid = ?
         ''', (uid,))
         conn.commit()
-        if c.rowcount > 0:
-            return True
+        if c.rowcount > 0: return True
         else: return False
     except sqlite3.Error: return False 
     finally: conn.close()
