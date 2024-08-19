@@ -1,4 +1,3 @@
-import time
 import socket
 import threading
 
@@ -6,7 +5,6 @@ from modules.system import System
 
 from services import sqlite, algorithm
 from services.utils import isEven, isCoinMessage
-
 
 
 class Server:
@@ -26,9 +24,11 @@ class Server:
 
         except Exception as error:
             System.console(address[0], 'Red', error)
+        '''
         finally:
             client.close()
             System.console(address[0], 'Blue', 'Đã ngắt kết nối')
+        '''
 
 
     def handleConnections(self) -> None:
