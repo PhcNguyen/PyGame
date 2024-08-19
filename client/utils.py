@@ -1,6 +1,6 @@
 import os
 import time
-from modules.core.style import Colors
+from modules.style import Colors
 
 
 

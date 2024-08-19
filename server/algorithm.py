@@ -1,4 +1,4 @@
-from random import randrange, shuffle, randint
+from random import randrange, shuffle, randint, choice
 
 
 
@@ -24,7 +24,7 @@ def listNumber(
         for i in range(100)
     ]
     shuffle(numbers)
-
+    numbers = choice(numbers)
     return numbers
 
 

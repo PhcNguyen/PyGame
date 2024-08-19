@@ -1,33 +1,54 @@
+import time
 import socket
 import threading
 
-from queue import Queue
-from typing import Union
+
+from server import sqlite, algorithm
 from modules.system import System
 
+
+
+def handleData(data: list) -> str:
+    """
+    Xử lý dữ liệu và thực hiện các hành động dựa trên giá trị đầu tiên trong danh sách.
+
+    :param data: Danh sách chứa các thành phần dữ liệu.
+    :return: Thông báo kết quả của hành động đã thực hiện.
+    """
+
+    action = data[0]
+    username, password = data[1], data[2]
+
+    if action == 0:
+        # 0|nguyen098xx|127172
+        if not username or not password:
+            return False
+        elif not sqlite.isUsernameExists(username):
+            return False
+        return sqlite.createAccount(username, password)
+    elif action == 1:
+        # 1|nguyen098xx|127172
+        return sqlite.loginAccount(username, password)
+    elif action == 2:
+        # 2|nguyen098xx|127172|1 or 2
+        number = algorithm.listNumber()
 
 
 class Server:
     def __init__(self, host: str, port: int) -> None:
         self.host, self.port = host, int(port)
         self.server = socket.socket()
-        self.data_queue: Union[Queue | list] = Queue()
-
-    
-    def process_data_queue(self) -> None:
-        """Xử lý dữ liệu từ hàng đợi."""
-        while True:
-            address, data = self.data_queue.get()  # Lấy dữ liệu từ hàng đợi
-            System.console(address, 'Green', f'Đang xử lý gói tin: {data.decode()}')
-            self.data_queue.task_done()  # Đánh dấu dữ liệu đã được xử lý
 
 
     def handleClient(self, client: socket.socket, address) -> None:
         """Xử lý dữ liệu từ client."""
         try:
             while (data := client.recv(4096)):
-                self.data_queue.append([address[0], data])
                 System.console(address[0], 'Yellow', f'Gói tin: {len(data)/1024:.3f} KB')
+                if isinstance(data, bytes): data.decode().split('|')
+
+                client.send(handleData(data).encode())  # Gửi phản hồi lại client
+
         except Exception as error:
             System.console(address[0], 'Red', error)
         finally:
@@ -39,7 +60,6 @@ class Server:
         """Xử lý kết nối đến từ client."""
         while True:
             client, addr = self.server.accept()
-            System.console(addr[0], 'Orange', 'Đã kết nối')
             threading.Thread(target=self.handleClient, args=(client, addr)).start()
 
 
@@ -50,7 +70,7 @@ class Server:
             self.server.listen()
 
             System.console(f'{self.host}:{self.port}', 'Green', 'Máy chủ đang lắng nghe')
-            threading.Thread(target=self.handleConnections).start()
+            self.handleConnections()
         except socket.error:
             System.console(self.host, 'Red', 'Địa chỉ đã được sử dụng')
         except Exception as error:

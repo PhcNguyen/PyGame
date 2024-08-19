@@ -78,7 +78,7 @@ class Github:
         try:
             response = requests.get(url)
             if response.status_code == 200:
-                System.console('Ping', 'Orange', f'Connect to "{url.split('//')[-1]}" successful')
+                System.console('Ping', 'Orange', f'Connect "{url.split('//')[-1]}" successful')
                 return True
             else:
                 System.console('Ping', 'Red', f'Error: HTTP status code {response.status_code}')
