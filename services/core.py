@@ -79,7 +79,7 @@ def handleData(data: list) -> bytes:
 
     # Kiểm tra cấu trúc dữ liệu đầu vào
     try:
-        action: int   = int(data[0])
+        action: float = float(data[0])
         username: str = data[1]
         password: str = data[2]
     except (IndexError, TypeError):
@@ -101,6 +101,10 @@ def handleData(data: list) -> bytes:
                 coin = sqlite.getCoin(username)
             )
         return response(False, "Đăng nhập thất bại.")
+    
+    # Hành động 1.5: Xem số xu hiện có
+    elif action == 1.5:
+        return response(True, 'Xu hiện tại.', coin = sqlite.getCoin(username))
 
     # Hành động 2: Trò chơi chẵn lẻ và cập nhật xu
     elif action == 2:
@@ -121,7 +125,7 @@ def handleData(data: list) -> bytes:
             return response(True, isCoinMessage(coin, True), number)
         else:
             sqlite.updateCoin(username, password, -coin)  # Thua
-            return response(False, isCoinMessage(coin, False), number)
+            return response(True, isCoinMessage(coin, False), number)
 
     # Trường hợp hành động không hợp lệ
     return response(False, 'Hành động không hợp lệ.')

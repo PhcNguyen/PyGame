@@ -19,7 +19,7 @@ MENU = '''
 ║               MENU               ║
 ║ 1.SPINS                4.CODE    ║
 ║ 2.DICE                           ║
-║ 3.BANKING COIN         0.EXIT    ║
+║ 3.BANKING COIN         0.BACK    ║
 ╚══════════════════════════════════╝
 '''
 
@@ -28,6 +28,7 @@ DICE = '''
 ║               DICE               ║
 ║                                  ║
 ║                                  ║
+║                        0.BACK    ║
 ╚══════════════════════════════════╝
 '''
 
@@ -35,7 +36,8 @@ SPINS = '''
 ╔══════════════════════════════════╗
 ║              SPINS               ║
 ║                                  ║
-║                                  ║
+║ 1.ODD - Lẻ                       ║
+║ 2.EVEN - Chẳn           0.BACK   ║
 ╚══════════════════════════════════╝
 '''
 
@@ -43,7 +45,7 @@ LOGIN = '''
 ╔══════════════════════════════════╗
 ║        LOGIN - ĐĂNG NHẬP         ║
 ║                                  ║
-║                                  ║
+║                         0.BACK   ║
 ╚══════════════════════════════════╝
 '''
 
@@ -51,7 +53,7 @@ REGISTER = '''
 ╔══════════════════════════════════╗
 ║        REGISTER - ĐĂNG KÝ        ║
 ║                                  ║
-║                                  ║
+║                         0.BACK   ║
 ╚══════════════════════════════════╝
 '''
 
@@ -59,7 +61,7 @@ REGISTER = '''
 def drawDivider() -> bool:
     try:
         terminal_size = get_terminal_size().columns
-        stdout.write(f"{Colors.white}▂{Colors.red}▂" * (terminal_size // 2) + "\n")
+        stdout.write(f"{Colors.white}▂{Colors.red}▂{Colors.white}" * (terminal_size // 2) + "\n")
         return True
     except Exception: return False
 
