@@ -49,7 +49,7 @@ def isUsernameExists(username: str) -> bool:
     except: return False
 
 
-def logHistory(username: str, action: str) -> None:
+def logHistory(username: str, action: str) -> bool:
     """Ghi lại lịch sử hành động của người dùng."""
     try:
         conn = sqlConnection()
@@ -59,6 +59,7 @@ def logHistory(username: str, action: str) -> None:
             VALUES (?, ?)
         ''', (username, action))
         conn.commit()
+        return True
     except sqlite3.Error: return False
     finally: conn.close()
 
@@ -74,6 +75,7 @@ def createAccount(username: str, password: str) -> bool:
             VALUES (?, ?, ?)
         ''', (username, password, 0))
         conn.commit()
+        logHistory(username, f'create account')
         return True
     # Trả về False để chỉ lỗi khi tạo người dùng
     except sqlite3.IntegrityError: return False 
@@ -91,6 +93,7 @@ def loginAccount(username: str, password: str) -> Union[int | bool]:
         ''', (username, password))
         result = c.fetchone()
         if result:
+            logHistory(username, f'login account')
             return True
         return False
     except sqlite3.Error: return False
@@ -121,6 +124,7 @@ def updatePassword(username: str, old_password: str, new_password: str) -> bool:
                     conn.rollback()
                     return False
                 conn.commit()
+                logHistory(username, f'{old_password}:{new_password}')
                 return True
             return False  # Mật khẩu cũ không đúng
         return False  # Tên người dùng không tồn tại
@@ -147,8 +151,8 @@ def updateCoin(username: str, password: str, additional_coins: int) -> bool:
                 c.execute('''
                     UPDATE users SET coin = ? WHERE username = ?
                 ''', (new_coin_amount, username))
-                logHistory(username, f'updateCoin: {additional_coins}')
                 conn.commit()
+                logHistory(username, f'updateCoin: {additional_coins}')
                 return True
             return False  # Mật khẩu không đúng
         return False  # Tên người dùng không tồn tại
