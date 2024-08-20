@@ -2,7 +2,6 @@ from client import utils
 from client.app import App
 from client.core import Client
 
-from modules.style import Colors
 from modules.system import System
 
 
@@ -12,12 +11,12 @@ PORT: int = 19000
 client = Client(HOST, PORT)
 
 
-def home(title: str = None):
+def home(message: str = None):
     System.clear()
     App.home()
-    if title: 
-        print(f'{Colors.red}{' '*5}{title}{Colors.white}')
-    select = input("{}Select: ".format(' '))
+    utils.displayMessage(message)
+
+    select = input(" Select: ")
     if select.isdigit():
         option = int(select)
         actions = {
@@ -27,20 +26,23 @@ def home(title: str = None):
 		}
         if option in actions:
             actions[option]()
-        else: home("Lựa chọn không hợp lệ.")
-    else: home("Vui lòng nhập số.")
+        else: 
+            home("Lựa chọn không hợp lệ.")
+    else: 
+        home("Vui lòng nhập số.")
 
 
-def register(title: str = None, username: str = None):
+def register(message: str = None, username: str = None):
     try:
         System.clear()
         App.register()
-        print(f'{Colors.red}{" "*5}{title}{Colors.white}' if title else '\n')
+        utils.displayMessage(message)
+
         if username: print("{}Username: {}".format(' ', username))
-        connection = client.serverConnect()
-        if not connection:
+
+        if not client.serverConnect():
             client.closeConnection()
-            home(connection)
+            home("Không thể kết nối tới máy chủ!")
 
         password = None
 
@@ -59,17 +61,20 @@ def register(title: str = None, username: str = None):
             if password.strip() == "":
                 register("Password không thể để trống.", username)
         
-        reponse = client.submitData('0|{}|{}'.format(username, password))
-        return home(reponse['msg'])
-    except Exception as error: return register(error)
-    finally: client.closeConnection()
+        response = client.submitData('0|{}|{}'.format(username, password))
+        return home(response['msg'])
+    except Exception as error: 
+        register(error)
+    finally: 
+        client.closeConnection()
 
 
-def login(title: str = None, username: str = None):
+def login(message: str = None, username: str = None):
     try:
         System.clear()
         App.login()
-        print(f'{Colors.red}{" "*5}{title}{Colors.white}' if title else '\n')
+        utils.displayMessage(message)
+
         if not client.serverConnect():
             home("Không thể kết nối tới máy chủ !")
         
@@ -92,70 +97,81 @@ def login(title: str = None, username: str = None):
         else:
             menu(reponse)
         
-    except Exception as error: return login(error)
-    finally: client.closeConnection()
+    except Exception as error: 
+        login(error)
+    finally: 
+        client.closeConnection()
 
 
-def menu(reponse, title: str = None):
+def menu(userCredentials, message: str = None):
     try:
         System.clear()
         App.menu()
-        print(f'{Colors.red}{" "*5}{title}{Colors.white}' if title else '\n')
-        select = input("{}Select: ".format(' '))
+        utils.displayMessage(message)
+
+        select = input(" Select: ")
         if select.isdigit():
             option = int(select)
             actions = {
                 0: lambda: home(),
-                1: lambda: spins(reponse),
-                2: lambda: dice(reponse),
+                1: lambda: spins(userCredentials),
+                2: lambda: dice(userCredentials),
             }
             if option in actions:
                 actions[option]()
             else: menu("Lựa chọn không hợp lệ.")
         else: menu("Vui lòng nhập số.")
-    except Exception as error: return menu(reponse, error)
+    except Exception as error: 
+        menu(userCredentials, error)
 
 
-def spins(reponse: dict, title: str = None):
+def spins(userCredentials: dict, message: str = None):
     try:
         System.clear()
         App.spins()
-        print(f'{Colors.red}{" "*5}{title}{Colors.white}' if title else '\n')
+        utils.displayMessage(message)
+        
         if not client.serverConnect():
-            home("Không thể kết nối tới máy chủ !")
+            menu("Không thể kết nối tới máy chủ!")
         
-        data = client.submitData('1.5|{}|{}'.format(
-            reponse['username'], reponse['password']
-            )
+        userData = client.submitData(
+            f'1.5|{userCredentials["username"]}|{userCredentials["password"]}'
         )
-        coin = data['coin']
-        print(f' Username: {reponse['username']}{' '*4}Xu: {coin:,}\n')
+        userCoins = userData['coin']
+        print(f' Username: {userCredentials["username"]}{" "*4}Xu: {userCoins:,}\n')
         
-        select = input('{}Select: '.format(' '))
-        if select.isdigit():
-            select = int(select)
-            if select == 0: return home()
-            if not 1 <= select <= 2:  
-                spins(reponse, "Lựa chọn không hợp lệ. Vui lòng 1 or 2.")
-        else:   spins(reponse, "Vui lòng nhập một số hợp lệ.")
+        selection = input('{}Select: '.format(' '))
+        if selection.isdigit():
+            selection = int(selection)
+            if selection == 0:
+                menu(userCredentials)
+            if not 1 <= selection <= 2:  
+                spins(userCredentials, "Lựa chọn không hợp lệ.")
+        else:
+            spins(userCredentials, "Vui lòng nhập một số hợp lệ.")
 
-        bet = input('{}Bet: '.format(' '))
-        if not bet.isdigit():
-            spins(reponse, "Bet không đúng.")
-            
-        reponses = client.submitData('2|{}|{}|{}|{}'.format(
-            reponse['username'], reponse['password'], select, bet
-        ))
+        betAmount = input(' Bet: ')
+        if not betAmount.isdigit():
+            spins(userCredentials, "Bet không đúng.")
+
+        spinResult = client.submitData(
+            f'2|{userCredentials["username"]}|{userCredentials["password"]}|{selection}|{betAmount}'
+        )
         
-        utils.spins(reponses['number'])
-        print(f'{' '*3}{reponses['msg']}')
-        input()
-        spins(reponse)
-    except Exception as error: spins(reponse, error)
-    finally: client.closeConnection()
+        if not spinResult['status']:
+            spins(userCredentials, spinResult['msg'])
+
+        utils.spins(spinResult['number'])
+        input(f'{' '*4}{spinResult["msg"]}')
+        spins(userCredentials)
+    except Exception as error:
+        spins(userCredentials, str(error))
+    finally: 
+        client.closeConnection()
 
 
-def dice(reponse):
+
+def dice(userCredentials):
     try:
         return
     except Exception as error: return error

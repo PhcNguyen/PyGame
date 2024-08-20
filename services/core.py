@@ -19,16 +19,19 @@ class Server:
             while (data := client.recv(4096)):
                 if isinstance(data, bytes): data = data.decode().split('|')
                 else: data.split('|')
-                System.console(f'Packets: {len(data[1])}B', 'Yellow', data)
+                System.console(f'Packets: {len(data)}B', 'Yellow', data)
                 client.send(handleData(data))  # Gửi phản hồi lại client
 
         except Exception as error:
-            System.console(address[0], 'Red', error)
-        '''
+            try:
+                System.console(data[1], 'Red', error)
+            except:
+                System.console(address[0], 'Red', error)
         finally:
             client.close()
-            System.console(address[0], 'Blue', 'Đã ngắt kết nối')
-        '''
+            try:
+                System.console(data[1], 'Blue', 'Đã ngắt kết nối')
+            except: System.console(address[0], 'Blue', 'Đã ngắt kết nối')
 
 
     def handleConnections(self) -> None:
@@ -117,12 +120,12 @@ def handleData(data: list) -> bytes:
         if not sqlite.checkCoin(username, coin):
             return response(False, 'Số xu không đủ.')
 
-        number = algorithm.ratioNumber(0.7) if select == 1 else algorithm.ratioNumber(0.3)
+        number = algorithm.ratioNumber(0.6) if select == 1 else algorithm.ratioNumber(0.4)
         isNumberEven = isEven(number) if select == 1 else not isEven(number)
 
         if isNumberEven:
             sqlite.updateCoin(username, password, coin)  # Thắng
-            return response(True, isCoinMessage(coin, True), number)
+            return response(True, isCoinMessage(coin*(1.8), True), number)
         else:
             sqlite.updateCoin(username, password, -coin)  # Thua
             return response(True, isCoinMessage(coin, False), number)

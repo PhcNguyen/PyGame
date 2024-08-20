@@ -58,9 +58,8 @@ REGISTER = '''
 '''
 
 
-def drawDivider() -> bool:
+def drawDivider(terminal_size) -> bool:
     try:
-        terminal_size = get_terminal_size().columns
         stdout.write(f"{Colors.white}▂{Colors.red}▂{Colors.white}" * (terminal_size // 2) + "\n")
         return True
     except Exception: return False
@@ -70,8 +69,11 @@ def drawDivider() -> bool:
 class App:
     @staticmethod
     def render_frame(frame: str) -> None:
-        print(frame)
-        drawDivider()
+        terminal_size = get_terminal_size().columns
+        for line in frame.strip().split('\n'):
+            left_padding = (terminal_size - len(line)) // 2
+            print(' ' * left_padding + line)
+        drawDivider(terminal_size)
 
     @staticmethod
     def home(): App.render_frame(HOME)

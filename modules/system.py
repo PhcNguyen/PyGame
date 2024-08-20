@@ -71,7 +71,7 @@ class System:
 
 class Github:
     start = time.time()
-    version = '1.0.4'
+    version = '1.0.5'
 
     @staticmethod
     def connect(url: str | bytes) -> bool:

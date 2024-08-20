@@ -17,3 +17,7 @@ def spins(n: int) -> bool:
         return True
     except:
         return False
+
+
+def displayMessage(message):
+    print(f'{Colors.red}{" "*5}{message}{Colors.white}' if message else '\n')
