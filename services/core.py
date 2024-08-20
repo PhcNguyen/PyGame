@@ -129,6 +129,26 @@ def handleData(data: list) -> bytes:
         else:
             sqlite.updateCoin(username, password, -coin)  # Thua
             return response(True, isCoinMessage(coin, False), number)
+        
+    # Hành động 3: Trò chơi xúc xắc
+    elif action == 3:
+        if len(data) < 5:
+            return response(False, 'Dữ liệu không đầy đủ.')
+        
+        select = int(data[3])
+        coin = int(data[4])
+        total, icons = algorithm.rollDice()
+
+        if not sqlite.checkCoin(username, coin):
+            return response(False, 'Số xu không đủ.')
+
+        if algorithm.checkDice(select, total):
+            sqlite.updateCoin(username, password, coin)  # Thắng
+            return response(True, isCoinMessage(coin*(1.8), True), [total, icons])
+        else:
+            sqlite.updateCoin(username, password, -coin)  # Thua
+            return response(True, isCoinMessage(coin, False), [total, icons])
+
 
     # Trường hợp hành động không hợp lệ
     return response(False, 'Hành động không hợp lệ.')

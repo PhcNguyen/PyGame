@@ -208,5 +208,5 @@ def deleteUser(uid: int) -> bool:
         conn.commit()
         if c.rowcount > 0: return True
         else: return False
-    except sqlite3.Error: return False 
+    except sqlite3.Error: return False
     finally: conn.close()

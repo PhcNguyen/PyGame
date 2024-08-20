@@ -171,7 +171,43 @@ def spins(userCredentials: dict, message: str = None):
 
 
 
-def dice(userCredentials):
+def dice(userCredentials, message = None):
     try:
-        return
+        System.clear()
+        App.dice()
+        utils.displayMessage(message)
+        
+        if not client.serverConnect():
+            menu("Không thể kết nối tới máy chủ!")
+
+        userData = client.submitData(
+            f'1.5|{userCredentials["username"]}|{userCredentials["password"]}'
+        )
+        userCoins = userData['coin']
+        print(f' Username: {userCredentials["username"]}{" "*4}Xu: {userCoins:,}\n')
+
+        selection = input('{}Select: '.format(' '))
+        if selection.isdigit():
+            selection = int(selection)
+            if selection == 0:
+                menu(userCredentials)
+            if not 1 <= selection <= 2:  
+                spins(userCredentials, "Lựa chọn không hợp lệ.")
+        else:
+            spins(userCredentials, "Vui lòng nhập một số hợp lệ.")
+
+        betAmount = input(' Bet: ')
+        if not betAmount.isdigit():
+            spins(userCredentials, "Bet không đúng.")
+
+        diceResult = client.submitData(
+            f'3|{userCredentials["username"]}|{userCredentials["password"]}|{selection}|{betAmount}'
+        )
+        
+        if not diceResult['status']:
+            dice(userCredentials, diceResult['msg'])
+
+        utils.dice(diceResult['number'][-1])
+        print(f'{' '*4}Tổng: {diceResult['number'][0]}')
+        input(f'{' '*4}{diceResult["msg"]}')
     except Exception as error: return error

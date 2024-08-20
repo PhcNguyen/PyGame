@@ -32,7 +32,7 @@ def ratioNumber(ratio: float = 0.7) -> int:
 
 
 
-def rollDice() -> (tuple[int, list[str]] | bool):
+def rollDice() -> list[int | str]:
     '''
     Simulate rolling three dice.
 
@@ -49,7 +49,7 @@ def rollDice() -> (tuple[int, list[str]] | bool):
     total: int = sum(numbers)
     icons: list[str] = [dice_icon[n] for n in numbers]
     
-    return total, icons
+    return [total, icons]
 
 
 def checkDice(select: int, numbers: int) -> int:
