@@ -26,4 +26,4 @@ def isCoinMessage(coin: int, is_win: bool) -> str:
     result = "Thắng!" if is_win else "Thua!"
     extra = " Chúc mừng bạn!" if is_win else " Cố gắng lần sau!"
     # Tạo thông báo cuối cùng
-    return f"{result} Bạn {action} {Colors.yellow}{coin:,}{Colors.white} xu.{extra}"
+    return f"{result} Bạn {action} {coin:,} xu.{extra}"

@@ -21,7 +21,9 @@ class Server:
                 else: data.split('|')
                 System.console(f'Packets: {len(data)}B', 'Yellow', data)
                 client.send(handleData(data))  # Gửi phản hồi lại client
-
+        except: 
+            pass
+    '''
         except Exception as error:
             try:
                 System.console(data[1], 'Red', error)
@@ -32,7 +34,7 @@ class Server:
             try:
                 System.console(data[1], 'Blue', 'Đã ngắt kết nối')
             except: System.console(address[0], 'Blue', 'Đã ngắt kết nối')
-
+    '''
 
     def handleConnections(self) -> None:
         """Xử lý kết nối đến từ client."""
